@@ -17,8 +17,8 @@
           <form id="waForm">
             <div class="mb-3">
               <label for="phoneNumber" class="form-label">Masukkan Nomor</label>
-              <input type="text" class="form-control" id="phoneNumber" placeholder="Pisahkan nomor dengan koma, misal: 085237147254,08381287412" />
-              <div id="phoneHelp" class="form-text">Masukkan nomor dengan angka awal "0" atau dalam format internasional.</div>
+              <input type="text" class="form-control" id="phoneNumber" placeholder="Misal 08198024013" />
+              <div id="emailHelp" class="form-text">Masukkan dengan angka diawal "0"</div>
             </div>
             <div class="mb-3">
               <label for="message" class="form-label">Buat Pesanmu</label>
@@ -43,28 +43,19 @@
           return;
         }
 
-        // Pisahkan nomor berdasarkan koma
-        const phoneNumbers = phoneInput.split(",").map((num) => num.trim());
+        // Format nomor menjadi format internasional
+        const phoneNumber = phoneInput.startsWith("0") ? "+62" + phoneInput.slice(1) : phoneInput;
 
-        phoneNumbers.forEach((phone) => {
-          // Validasi nomor telepon
-          if (!/^\d+$/.test(phone)) {
-            alert(`Nomor "${phone}" tidak valid! Pastikan hanya angka.`);
-            return;
-          }
+        // Encode pesan untuk memastikan URL valid
+        const encodedMessage = encodeURIComponent(messageInput);
 
-          // Format nomor ke format internasional (jika dimulai dengan "0")
-          const phoneNumber = phone.startsWith("0") ? "+62" + phone.slice(1) : phone;
+        // URL WhatsApp
+        const waUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-          // Encode pesan
-          const encodedMessage = encodeURIComponent(messageInput);
-
-          // URL WhatsApp
-          const waUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-          // Buka URL di tab baru
+        // Kirim pesan sebanyak 3 kali
+        for (let i = 0; i < 3; i++) {
           window.open(waUrl, "_blank");
-        });
+        }
       });
     </script>
   </body>
